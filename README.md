@@ -10,19 +10,39 @@ The [Cat and Dog Dataset on Kaggle](https://www.kaggle.com/datasets/tongpython/c
 ---
 
 ## Structure
+classification_cat_dog/ <br>
+│── assets/  <br>
+│── inference/ <br>
+│── models/<br>
+│── train/<br>
 
 ---
 
 ## Content
 
+Under training you find the trainings pipeline for image classification. The backbone of the model is EfficientNet-B0,which is than followed by a CNN. It can either be trained from scratch or with the pretrained weights from EfficientNet-B0. <br>
+Accuarcies: <br>
+With pretrained weights: 0.9683 <br>
+Without pretrained weights: 0.7829 <br>
+<br>
+The best models of each training is saved under models and can later be used for inference. <br>
+Under inference we set up the prediction either for our test data set or our own images.
+A demonstrated of the inference of your own images is in the notebook in [`example_notebook.ipynb`](example_notebook.ipynb).
+
 ---
 
 ## How to install
+
+Creat python env
+
+```bash
+conda create -n classification_cat_dog python==3.10
+conda activate classification_cat_dog
+```
 Clone the repository and install dependencies:
 
-### Using pip
 ```bash
-git clone https://github.com/yourusername/cat-dog-classifier.git
-cd cat-dog-classifier
+git clone https://github.com/WJannik/classification_cat_dog.git
+cd classification_cat_dog
 pip install -r requirements.txt
-
+```
