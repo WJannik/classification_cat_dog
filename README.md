@@ -24,17 +24,30 @@ Under training you find the trainings pipeline for image classification. The bac
 **Results of training:** <br>
 
 Accuracy without pretrained weights: 0.7829 <br>
-<img src="assets\training_model.png" alt="Cat" height="300"/>  <br>
+<div align="center">
+<img src="assets\training_model.png" alt="Cat" height="300"/> 
+</div>
+<br>
 Accuracy with pretrained weights: 0.9683 <br>
+<div align="center">
 <img src="assets\training_pretrained_model.png" alt="Dog" height="300"/>
+</div>
 
 <br>
 The best models of each training is saved under models and can later be used for inference. <br>
 Under inference we set up the prediction either for our test data set or our own images.
-A demostraion of the inference of your own images is in the notebook in [`example_notebook.ipynb`](example_notebook.ipynb). <br>
-
+<p>
+A demonstration of the inference of your own images is in the notebook 
+<a href="example_notebook.ipynb">example_notebook.ipynb</a>.
+</p>
+<br>
+<div align="center">
 <img src="assets/output_cat.png" alt="Cat" height="300"/> 
-<img src="assets/output_dog.png" alt="Dog" height="300"/>
+</div>
+
+<div align="center">
+  <img src="assets/output_dog.png" alt="Dog" height="300"/>
+</div>
 
 ---
 
