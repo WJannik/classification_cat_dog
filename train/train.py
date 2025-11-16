@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.optim.lr_scheduler import CosineAnnealingLR
+
 from tqdm import tqdm
 #from tqdm.notebook import tqdm
 import timm
@@ -43,7 +45,8 @@ def train_model(train_loader, test_loader, **kwargs):
         "learning_rate": 0.001,
         "data_augmentation": True,
         "pretrained": True,
-        "model_name": "SimplePetClassifer"
+        "model_name": "SimplePetClassifer",
+        "use_LR_scheduler": False,
     }
 
     # Update defaults with any new values passed in kwargs
@@ -53,16 +56,19 @@ def train_model(train_loader, test_loader, **kwargs):
     train_losses, test_losses, accuracies = [], [], []
     highest_accuracy = 0.0
 
-    # Choose device and create model, loss function, optimizer
+    # Choose device and create model, loss function, optimizer and scheduler
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = SimplePetClassifer(num_classes=2, pretrained=config["pretrained"])
     model.to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=config["learning_rate"])
+    if config["use_LR_scheduler"]:
+        scheduler = CosineAnnealingLR(optimizer, T_max=config["num_epochs"])
 
     # Training loop
     for epoch in range(config["num_epochs"]):
         # Training phase
+        print("------------------ Starting epoch", epoch+1, " ------------------")
         model.train()
         running_loss = 0.0
         for images, labels in tqdm(train_loader, desc='Training loop'):
@@ -87,6 +93,8 @@ def train_model(train_loader, test_loader, **kwargs):
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
+            if config["use_LR_scheduler"]:
+                scheduler.step()
             running_loss += loss.item() * labels.size(0)
         
         # Compute average training loss for the epoch
@@ -135,24 +143,24 @@ def plot_metrics(train_losses, test_losses, accuracies):
     Returns:
         None
     """
+    epochs = range(1, len(train_losses) + 1)
     # Plot losses
     plt.subplot(1, 2, 1)
-    plt.plot(train_losses, label='Training loss')
-    plt.plot(test_losses, label='Test loss')
+    plt.plot(epochs,train_losses, label='Training loss')
+    plt.plot(epochs,test_losses, label='Test loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.xticks(range(len(train_losses)))
+    plt.xticks(epochs)
     plt.legend()
     plt.title("Loss over epochs")
     # Plot accuracy
     plt.subplot(1, 2, 2)
-    plt.plot(accuracies, label='Accuracy')
+    plt.plot(epochs, accuracies, label='Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
-    plt.xticks(range(len(accuracies)))
+    plt.xticks(epochs)
     plt.legend()
     plt.title("Accuracy over epochs")
-    
-    plt.tight_layout()
+    plt.figure(figsize=(12, 5))
     plt.show()
 
