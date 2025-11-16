@@ -19,7 +19,18 @@ class SimplePetClassifer(nn.Module):
         # Make a classifier
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(enet_out_size, num_classes)
+            #nn.Linear(enet_out_size, num_classes) # or simply just this, since the output of EfficientNetB0 is 1280 and is already sufficient for binary classification
+            nn.Linear(enet_out_size, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Linear(128, 32),
+            nn.ReLU(),
+            nn.Linear(32, 8),
+            nn.ReLU(),
+            nn.Linear(8, num_classes)
         )
     
     def forward(self, x):
@@ -68,7 +79,7 @@ def train_model(train_loader, test_loader, **kwargs):
     # Training loop
     for epoch in range(config["num_epochs"]):
         # Training phase
-        print("------------------ Starting epoch", epoch+1, " ------------------")
+        print(f"------------------ Starting epoch {epoch+1} of {config['num_epochs']} ------------------")
         model.train()
         running_loss = 0.0
         for images, labels in tqdm(train_loader, desc='Training loop'):
@@ -130,7 +141,7 @@ def train_model(train_loader, test_loader, **kwargs):
             print(f"New highest accuracy: {highest_accuracy}, saving model...")
             save_path = "../models/" + config["model_name"] + ".pth"
             torch.save(model.state_dict(), save_path)
-        print(f"Epoch {epoch+1}/{config['num_epochs']} - Train loss: {train_loss}, Test loss: {test_loss}, Accuracy: {accuracy}")
+        print(f"Train loss: {train_loss}, Test loss: {test_loss}, Accuracy: {accuracy}")
     return train_losses, test_losses, accuracies
 
 
@@ -161,6 +172,6 @@ def plot_metrics(train_losses, test_losses, accuracies):
     plt.xticks(epochs)
     plt.legend()
     plt.title("Accuracy over epochs")
-    plt.figure(figsize=(12, 5))
+    plt.figure(figsize=(15, 5))
     plt.show()
 
