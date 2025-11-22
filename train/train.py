@@ -71,7 +71,7 @@ def train_model(train_loader, test_loader, **kwargs):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = SimplePetClassifer(num_classes=2, pretrained=config["pretrained"])
     model.to(device)
-    criterion = nn.CrossEntropyLoss()
+    loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=config["learning_rate"])
     if config["use_LR_scheduler"]:
         scheduler = CosineAnnealingLR(optimizer, T_max=config["num_epochs"])
@@ -101,7 +101,7 @@ def train_model(train_loader, test_loader, **kwargs):
             
             optimizer.zero_grad()
             outputs = model(images)
-            loss = criterion(outputs, labels)
+            loss = loss_function(outputs, labels)
             loss.backward()
             optimizer.step()
             if config["use_LR_scheduler"]:
@@ -121,7 +121,7 @@ def train_model(train_loader, test_loader, **kwargs):
                 # Move inputs and labels to the device
                 images, labels = images.to(device), labels.to(device)
                 outputs = model(images)
-                loss = criterion(outputs, labels)
+                loss = loss_function(outputs, labels)
                 running_loss += loss.item() * labels.size(0)
 
                 # Compute accuracy based on highest probability
@@ -154,7 +154,9 @@ def plot_metrics(train_losses, test_losses, accuracies):
     Returns:
         None
     """
-    epochs = range(1, len(train_losses) + 1)
+    assert len(train_losses) == len(test_losses) == len(accuracies), "All input lists must have the same length."
+    epochs = range(1, len(train_losses) + 1,1)
+    plt.figure(figsize=(15, 5))
     # Plot losses
     plt.subplot(1, 2, 1)
     plt.plot(epochs,train_losses, label='Training loss')
@@ -170,8 +172,8 @@ def plot_metrics(train_losses, test_losses, accuracies):
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.xticks(epochs)
+    plt.yticks([i/10.0 for i in range(5,11)])
     plt.legend()
     plt.title("Accuracy over epochs")
-    plt.figure(figsize=(15, 5))
     plt.show()
 

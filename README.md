@@ -22,26 +22,29 @@ classification_cat_dog/ <br>
 ## Content
 
 The training pipeline for image classification is located under `train/`.  
-The backbone of the model is **EfficientNet-B0**, followed by custom CNN layers.  
+The backbone of the model is **EfficientNet-B0**, followed by NN layers.  
 It can either be trained from scratch or initialized with pretrained EfficientNet-B0 weights.  
 
-**Training Results:** <br>
+**Model results** <br>
 
-Accuracy without pretrained weights: **0.7829** <br>
+Highest accuracy on validation dataset without pretrained weights: **0.7732** <br>
 <div align="center">
-<img src="assets/training_model.png" alt="Training without pretrained weights" height="300"/> 
+<img src="assets/training_model.png" alt="Training without pretrained weights"/> 
 </div>
 <br>
 
-Accuracy with pretrained weights: **0.9683** <br>
+Highest accuracy on validation dataset with pretrained weights: **0.9544** <br>
 <div align="center">
-<img src="assets/training_pretrained_model.png" alt="Training with pretrained weights" height="300"/>
+<img src="assets/training_pretrained_model.png" alt="Training with pretrained weights"/>
 </div>
 
 <br>
-The best models from each training run are saved under `models/` and can later be used for inference.  
 
-Inference scripts are located under `inference/`, where predictions can be run on the test dataset or on custom images.  
+The best models from each training run are saved under `models/` and can later be used for inference.
+We notice that the training with pretrained weights is not increasing the accuracy after the first epoch as it is already very high.
+Inference scripts are located under `inference/`, where predictions can be run on the test dataset or on custom images.
+Furthermore, we compute the accuracy on the test dataset.
+For the model trained from scratch the final accuracy is **0.7978** and the pretrained model has an accuracy of **0.9619**.
 
 <p>
 A demonstration of inference on custom images is provided in the notebook  
