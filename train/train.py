@@ -9,7 +9,7 @@ import timm
 import matplotlib.pyplot as plt
 
 class SimplePetClassifer(nn.Module):
-    def __init__(self, num_classes=2, pretrained=True):
+    def __init__(self, num_classes: int = 2, pretrained: bool = True):
         super(SimplePetClassifer, self).__init__()
         # Where we define all the parts of the model
         self.base_model = timm.create_model('efficientnet_b0', pretrained=pretrained)
@@ -39,7 +39,9 @@ class SimplePetClassifer(nn.Module):
         output = self.classifier(x)
         return output
 
-def train_model(train_loader, test_loader, **kwargs):   
+def train_model(train_loader: torch.utils.data.DataLoader, 
+                test_loader: torch.utils.data.DataLoader, 
+                **kwargs) -> tuple[list[float], list[float], list[float]]:   
     """Train a classification model on the provided data loaders.
     Parameters:
         train_loader (DataLoader): DataLoader for training data.
@@ -145,7 +147,7 @@ def train_model(train_loader, test_loader, **kwargs):
     return train_losses, test_losses, accuracies
 
 
-def plot_metrics(train_losses, test_losses, accuracies):
+def plot_metrics(train_losses: list[float], test_losses: list[float], accuracies: list[float]) -> None:
     """Plot training and test losses and accuracy over epochs.
     Parameters:
         train_losses (list): List of training losses per epoch.

@@ -6,7 +6,7 @@ import numpy as np
 
 from .utils_inference import preprocess_image, predict, visualize_predictions, get_predicted_label
 
-def inference_image(image_path):
+def inference_image(image_path: str) -> tuple[str, object, np.ndarray]:
     assert os.path.isfile(image_path), f"Provided path is not a file: {image_path}"
     assert os.path.exists(image_path), f"Image file not found at {image_path}"
     
